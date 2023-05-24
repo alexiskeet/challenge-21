@@ -7,7 +7,7 @@ import { LOGIN_USER } from '../utils/mutations';
 import Auth from '../utils/auth';
 
 const LoginForm = () => {
-  const [userFormData, setUserFormData] = useState({ email: '', password: '' });
+  const [userFormData, setUserFormData] = useState({ email: '', username: "", password: '' });
   const [validated] = useState(false);
   const [showAlert, setShowAlert] = useState(false);
   const [loginUser, { error }] = useMutation(LOGIN_USER);
@@ -15,8 +15,24 @@ const LoginForm = () => {
 
   const handleInputChange = (event) => {
     const { name, value } = event.target;
-    setUserFormData({ ...userFormData, [name]: value });
+    if(name !== "email"){
+      setUserFormData({ ...userFormData, [name]: value });
+      return
+    }
+    if(value.includes("@")){
+      setUserFormData({
+        ...userFormData,
+        email: value,
+      })
+    } else {
+      setUserFormData({
+        ...userFormData,
+        email: "",
+        username: value
+      })
+    }
   };
+  console.log(userFormData)
 
   const handleFormSubmit = async (event) => {
     event.preventDefault();
@@ -33,7 +49,7 @@ const LoginForm = () => {
         variables: {...userFormData},
         });
 
-      Auth.login(data.login.token);
+      Auth.login(data.loginUser.token);
       } catch (err) {
       console.error(err);
       setShowAlert(true);
@@ -53,13 +69,13 @@ const LoginForm = () => {
           Something went wrong with your login credentials!
         </Alert>
         <Form.Group className='mb-3'>
-          <Form.Label htmlFor='email'>Email</Form.Label>
+          <Form.Label htmlFor='email'>Email or Username</Form.Label>
           <Form.Control
             type='text'
-            placeholder='Your email'
+            placeholder='Your email or username'
             name='email'
             onChange={handleInputChange}
-            value={userFormData.email}
+            value={userFormData.email|| userFormData.username}
             required
           />
           <Form.Control.Feedback type='invalid'>Email is required!</Form.Control.Feedback>
@@ -78,7 +94,7 @@ const LoginForm = () => {
           <Form.Control.Feedback type='invalid'>Password is required!</Form.Control.Feedback>
         </Form.Group>
         <Button
-          disabled={!(userFormData.email && userFormData.password)}
+          disabled={!(userFormData.email || userFormData.username && userFormData.password)}
           type='submit'
           variant='success'>
           Submit
