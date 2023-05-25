@@ -15,6 +15,7 @@ import { removeBookId } from '../utils/localStorage';
 
 const SavedBooks = () => {
   const { loading, data, error } = useQuery( GET_ME );
+  const [removeBook] = useMutation( REMOVE_BOOK );
   error ? console.log(error): console.log(data)
   const userData = data?.me
   console.log(userData)
@@ -28,8 +29,15 @@ const SavedBooks = () => {
     if (!token) {
       return false;
     }
-
-  };
+    try {
+      const {data} = await removeBook({
+        variables: {bookId}
+      });
+    } catch (error) {
+      console.log(error)
+    }
+    removeBookId(bookId);
+  }
 
   // if data isn't here yet, say so
   if (loading) {
