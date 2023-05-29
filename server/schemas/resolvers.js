@@ -63,7 +63,7 @@ Mutation: {
                 {
                     $pull: {
                         savedBooks: {
-                            _id: bookId
+                            bookId: bookId
                         },
                     },
                 },
