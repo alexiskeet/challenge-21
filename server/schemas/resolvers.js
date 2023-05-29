@@ -45,9 +45,8 @@ Mutation: {
                 {_id: context.user._id},
                 {
                     $addToSet: {
-                        savedBooks: {
-                           newBook 
-                        }
+                        savedBooks:
+                           newBook, 
                     },
                 },
                 {
@@ -59,8 +58,8 @@ Mutation: {
     },
     removeBook: async (parent, {bookId}, context) => {
         if (context.user) {
-            return Book.findOneAndUpdate(
-                {_id: bookId},
+            return User.findOneAndUpdate(
+                {_id: context.user._id},
                 {
                     $pull: {
                         savedBooks: {
