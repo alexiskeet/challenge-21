@@ -57,6 +57,8 @@ Mutation: {
         throw new AuthenticationError('You need to be logged in!');
     },
     removeBook: async (parent, {bookId}, context) => {
+        console.log('DELETING A BOOK')
+        console.log(bookId)
         if (context.user) {
             return User.findOneAndUpdate(
                 {_id: context.user._id},
